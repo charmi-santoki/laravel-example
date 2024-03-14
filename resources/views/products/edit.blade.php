@@ -41,18 +41,18 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     $("#imgInput").change(function() {
-    //         if (this.files && this.files[0]) {
+    $(document).ready(function() {
+        $("#imgInput").change(function() {
+            if (this.files && this.files[0]) {
 
-    //             var reader = new FileReader();
+                var reader = new FileReader();
 
-    //             reader.onload = function(e) {
-    //                 $('#imgPreview').attr('src', e.target.result);
-    //             }
+                reader.onload = function(e) {
+                    $('#imgPreview').attr('src', e.target.result);
+                }
 
-    //             reader.readAsDataURL(this.files[0]);
-    //         }
-    //     });
-    // });
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
 </script>
