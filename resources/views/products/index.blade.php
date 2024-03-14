@@ -23,7 +23,7 @@
                 <th>No</th>
                 <th>Name</th>
                 <th>Details</th>
-                <th>Image</th>
+                <th width="350px">Image</th>
                 <th width="280px">Action</th>
             </tr>
             @foreach ($products as $product)
@@ -32,8 +32,8 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->detail }}</td>
                     <td>
-                        <img src="{{ asset('storage/' . $product->image) }}">
-                    </td>
+                        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3">
+                </td>
                     <td>
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST">
 
@@ -56,6 +56,7 @@
 </x-app-layout>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $(".show_confirm").on('click', function() {

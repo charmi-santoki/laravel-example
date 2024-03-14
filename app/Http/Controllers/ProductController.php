@@ -23,7 +23,8 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products =  $this->productRepository->allProducts()->toQuery()->paginate(5);
+        $products =  $this->productRepository->allProducts();
+        // ->toQuery()->paginate(5);
 
         return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
@@ -50,12 +51,9 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('public/images');
-            $data['image'] = $imagePath;
-        } else {
-            // Handle case when no image is uploaded
-            return redirect()->back()->withInput()->withErrors(['image' => 'No image uploaded']);
+            $image = $imagePath;
+            $data['image'] = $image;
         }
-
         $this->productRepository->storeProduct($data);
 
         return redirect()->route('products.index')->with('success', 'Product Created Successfully');
@@ -87,13 +85,13 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'detail' => 'required|string|max:255',
         ]);
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('public/images');
-            $data['image'] = $imagePath;
-        } else {
-            // Handle case when no image is uploaded
-            return redirect()->back()->withInput()->withErrors(['image' => 'No image uploaded']);
+            $image = $imagePath;
+            $request['image'] = $image;
         }
+
         $this->productRepository->updateProduct($request->all(), $id);
 
         return redirect()->route('products.index')->with('success', 'product Updated Successfully');
