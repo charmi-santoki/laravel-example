@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('dropdown', [DropdownController::class, 'index']);
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,6 +23,7 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,5 +33,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('products', ProductController::class);
 
+Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
+Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
 
 require __DIR__.'/auth.php';
