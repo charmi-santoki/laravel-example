@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -79,20 +80,27 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, Product $product): RedirectResponse
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'detail' => 'required|string|max:255',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+
         ]);
 
         if ($request->hasFile('image')) {
+            // Store the new image
             $imagePath = $request->file('image')->store('public/images');
-            $image = $imagePath;
-            $request['image'] = $image;
+            $data['image'] = $imagePath;
+        
+            // Delete the old image if it exists
+            if ($product->image) {
+                Storage::delete($product->image);
+            }
         }
 
-        $this->productRepository->updateProduct($request->all(), $id);
+        $product->update($data);
 
         return redirect()->route('products.index')->with('success', 'product Updated Successfully');
     }

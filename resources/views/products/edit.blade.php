@@ -26,7 +26,7 @@
         
                 <div class="form-group">
                     <label><b>Select Image:</b></label>
-                    <input type="file" class="form-control" id="imgInput" accept="image/*">
+                    <input type="file" class="form-control" id="imgInput" name="image" accept="image/*">
                     <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3"
                         id="imgPreview">
                     @error('image')

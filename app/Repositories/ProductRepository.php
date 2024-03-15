@@ -28,6 +28,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = Product::where('id', $id)->first();
         $product->name = $data['name'];
         $product->detail = $data['detail'];
+        $product->image;
         $product->save();
     }
 
