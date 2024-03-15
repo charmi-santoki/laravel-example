@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\CategoryAjaxController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -15,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('dropdown', [DropdownController::class, 'index']);
 Route::get('/', function () {
     return view('welcome');
 });
@@ -33,7 +34,11 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('products', ProductController::class);
 
+Route::get('dropdown', [DropdownController::class, 'index']);
 Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
 Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
 
-require __DIR__.'/auth.php';
+Route::resource('category-ajax-crud', CategoryAjaxController::class);
+
+
+require __DIR__ . '/auth.php';
