@@ -10,12 +10,25 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function allProducts()
     {
-        return Product::latest()->paginate(10);
+        return Product::with('category')->paginate(5);
     }
 
-    public function storeProduct($data)
+    public function storeProduct(array $request = [])
     {
-        return Product::create($data);
+        if (isset($request['image']) && $request['image']->isValid()) {
+            $imagePath = $request['image']->store('images', 'public');
+        } else {
+            $imagePath = null;
+        }
+
+        $product_data = [
+            "category_id"    => $request['category_id'],
+            "name"     => $request['name'],
+            "detail"  => $request['detail'],
+            "image"   => $imagePath,
+        ];
+
+        return Product::create($product_data);
     }
 
     public function findProduct($id)
@@ -23,19 +36,26 @@ class ProductRepository implements ProductRepositoryInterface
         return Product::find($id);
     }
 
-    public function updateProduct($data, $id)
+    public function updateProduct(array $request = [])
     {
-        $product = Product::where('id', $id)->first();
-        $product->name = $data['name'];
-        $product->detail = $data['detail'];
-        $product->category_id = $data['category_id'];
-        $product->image;
-        $product->save();
+        if (isset($request['image']) && $request['image']->isValid()) {
+            $imagePath = $request['image']->store('images', 'public');
+        } else {
+            $imagePath = null;
+        }
+
+        $product_data = [
+            "category_id"    => $request['category_id'],
+            "name"     => $request['name'],
+            "detail"  => $request['detail'],
+            "image"   => $imagePath,
+        ];
+        Product::where('id',$request['product_id'])->update($product_data);
     }
 
-    public function destroyProduct($id)
+    public function destroyProduct(array $where)
     {
-        $product = Product::find($id);
-        $product->delete();
+        return Product::where($where)->delete();
+
     }
 }
