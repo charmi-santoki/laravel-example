@@ -7,6 +7,17 @@
         <div class="card-body">
             <form method="post" action="{{ route('products.store') }}" enctype="multipart/form-data">
                 <div class="form-group">
+                    <label for="name">Category:</label>
+                <select name="category_id" class="form-control">
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                @error('category_id')
+                <div class="error">{{ $message }}</div>
+            @enderror
+                </div>
+                <div class="form-group">
                     @csrf
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" name="name" />

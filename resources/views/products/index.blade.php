@@ -23,6 +23,7 @@
                 <th>No</th>
                 <th>Name</th>
                 <th>Details</th>
+                <th>Category</th>
                 <th width="350px">Image</th>
                 <th width="280px">Action</th>
             </tr>
@@ -31,9 +32,10 @@
                     <td>{{ ++$i }}</td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->detail }}</td>
+                    <td>{{ $product->category->name }}</td>
                     <td>
                         <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3">
-                </td>
+                    </td>
                     <td>
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST">
 
@@ -50,7 +52,6 @@
                 </tr>
             @endforeach
         </table>
-
         {!! $products->links() !!}
     @endsection
 </x-app-layout>

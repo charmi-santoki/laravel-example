@@ -47,7 +47,6 @@ class CategoryAjaxController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         Category::updateOrCreate(
             [
                 'id' => $request->category_id

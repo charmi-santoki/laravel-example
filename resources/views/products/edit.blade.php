@@ -8,10 +8,25 @@
             <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="form-group">
 
+                <div class="form-group">
+                    <label for="name">Category:</label>
+                    <select name="category_id" class="form-control">
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}"
+                            @if(old('category_id',$product->category_id) == $category->id) selected @endif >
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                    </select>
+                    @error('category_id')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" value="{{ $product->name }}" class="form-control" placeholder="Name">
+                    <input type="text" name="name" value="{{ $product->name }}" class="form-control"
+                        placeholder="Name">
                     @error('name')
                         <div class="error">{{ $message }}</div>
                     @enderror
@@ -23,7 +38,7 @@
                         <div class="error">{{ $message }}</div>
                     @enderror
                 </div>
-        
+
                 <div class="form-group">
                     <label><b>Select Image:</b></label>
                     <input type="file" class="form-control" id="imgInput" name="image" accept="image/*">

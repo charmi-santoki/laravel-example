@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\ProductRepositoryInterface;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,8 +25,10 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products =  $this->productRepository->allProducts();
+        // $products =  $this->productRepository->allProducts();
         // ->toQuery()->paginate(5);
+
+        $products = Product::with('category')->get();
 
         return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
@@ -35,7 +38,10 @@ class ProductController extends Controller
      */
     public function create(): View
     {
-        return view('products.create');
+
+        $categories = Category::all();
+
+        return view('products.create',compact('categories'));
     }
 
     /**
@@ -47,7 +53,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'detail' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-
+            'category_id' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
@@ -73,8 +79,9 @@ class ProductController extends Controller
     public function edit($id): View
     {
         $product = $this->productRepository->findProduct($id);
+        $categories = Category::all();
 
-        return view('products.edit', compact('product'));
+        return view('products.edit', compact('product','categories'));
     }
 
     /**
@@ -85,6 +92,7 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'detail' => 'required|string|max:255',
+            'category_id' => 'required',
             // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
@@ -102,7 +110,7 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return redirect()->route('products.index')->with('success', 'product Updated Successfully');
+        return redirect()->route('products.index')->with('success', 'Product Updated Successfully');
     }
 
     /**
@@ -112,6 +120,6 @@ class ProductController extends Controller
     {
         $this->productRepository->destroyproduct($id);
 
-        return redirect()->route('products.index')->with('success', 'product Delete Successfully');
+        return redirect()->route('products.index')->with('success', 'Product Delete Successfully');
     }
 }
