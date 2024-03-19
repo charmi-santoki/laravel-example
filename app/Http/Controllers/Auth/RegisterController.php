@@ -53,6 +53,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'image' => ['required'],
         ]);
     }
 
@@ -68,9 +69,10 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'image' => $data['image'],
         ]);
   
-        $user->notify(new \App\Notifications\WelcomeMailNotification($user));
+        // $user->notify(new \App\Mail\DemoMail($user));
   
         return $user;
     }
