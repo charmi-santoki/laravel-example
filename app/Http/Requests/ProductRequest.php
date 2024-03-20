@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class ProductRequest extends FormRequest
 {
@@ -19,13 +20,21 @@ class ProductRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
-        return [
-            'name' => 'required|string|max:255',
-            'detail' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category_id' => 'required',    
-        ];
+        if ($request->has('id')) {
+            return [
+                'name' => 'required|string|max:255',
+                'detail' => 'required|string|max:255',
+                'category_id' => 'required',
+            ];
+        } else {
+            return [
+                'name' => 'required|string|max:255',
+                'detail' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'category_id' => 'required',
+            ];
+        }
     }
 }

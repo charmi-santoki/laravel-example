@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -38,24 +39,29 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function updateProduct(array $request = [])
     {
+        $product = Product::findOrFail($request['product_id']);
+
         if (isset($request['image']) && $request['image']->isValid()) {
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
             $imagePath = $request['image']->store('images', 'public');
         } else {
-            $imagePath = null;
+            $imagePath = $product->image;
         }
 
         $product_data = [
-            "category_id"    => $request['category_id'],
-            "name"     => $request['name'],
-            "detail"  => $request['detail'],
-            "image"   => $imagePath,
+            "category_id" => $request['category_id'],
+            "name" => $request['name'],
+            "detail" => $request['detail'],
+            "image" => $imagePath,
         ];
-        Product::where('id',$request['product_id'])->update($product_data);
+
+        Product::where('id', $request['product_id'])->update($product_data);
     }
 
     public function destroyProduct(array $where)
     {
         return Product::where($where)->delete();
-
     }
 }

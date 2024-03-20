@@ -26,9 +26,7 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products =  $this->productRepository->allProducts()->toQuery()->paginate(5);
-
-            // $products = Product::with('category')->get();
+        $products =  $this->productRepository->allProducts();
 
         return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
@@ -77,21 +75,10 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product): RedirectResponse
     {
-        // if ($request->hasFile('image')) {
-        //     // Store the new image
-        //     $imagePath = $request->file('image')->store('public/images');
-        //     $data['image'] = $imagePath;
-
-        //     // Delete the old image if it exists
-        //     if ($product->image) {
-        //         Storage::delete($product->image);
-        //     }
-        // }
-
         $request_data =  $request->all();
 
         $request_data['product_id'] = $product->id;
-        
+
         $this->productRepository->updateProduct($request_data);
 
         return redirect()->route('products.index')->with('success', 'Product Updated Successfully');
@@ -103,7 +90,7 @@ class ProductController extends Controller
     public function destroy(Product $product): RedirectResponse
     {
         $this->productRepository->destroyProduct([
-            ['id',$product->id]
+            ['id', $product->id]
         ]);
         return redirect()->route('products.index')->with('success', 'Product Delete Successfully');
     }

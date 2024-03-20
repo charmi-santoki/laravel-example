@@ -8,7 +8,8 @@
             <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-
+                <input type="hidden" name="id" value="{{ $product->id }}" class="form-control"
+                placeholder="id">
                 <div class="form-group">
                     <label for="name">Category:</label>
                     <select name="category_id" class="form-control">
@@ -44,9 +45,6 @@
                     <input type="file" class="form-control" id="imgInput" name="image" accept="image/*">
                     <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3"
                         id="imgPreview">
-                    @error('image')
-                        <div class="error">{{ $message }}</div>
-                    @enderror
                 </div>
                 <button type="submit" class="btn btn-block btn-primary">Create User</button>
             </form>

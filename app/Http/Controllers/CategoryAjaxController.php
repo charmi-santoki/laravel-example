@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
+use App\Repositories\CategoryRepository;
 use DataTables;
 
 class CategoryAjaxController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
 
-            $data = Category::latest()->get();
+            $data = $this->categoryRepository->all();
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-
                     $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="edit btn btn-primary btn-sm editCategory">Edit</a>';
-
-                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteCategory">Delete</a>';
-
+                    $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteCategory">Delete</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -34,63 +36,42 @@ class CategoryAjaxController extends Controller
         return view('categoryAjax');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        Category::updateOrCreate(
-            [
-                'id' => $request->category_id
-            ],
-            [
-                'name' => $request->name,
-                'detail' => $request->detail
-            ]
-        );
+        $data = [
+            'name' => $request->name,
+            'detail' => $request->detail
+        ];
+
+        $this->categoryRepository->createOrUpdate($request->category_id, $data);
 
         return response()->json(['success' => 'Category saved successfully.']);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $category = Category::find($id);
+        $category = $this->categoryRepository->find($id);
         return response()->json($category);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        Category::find($id)->delete();
+        $this->categoryRepository->delete($id);
 
         return response()->json(['success' => 'Category deleted successfully.']);
     }

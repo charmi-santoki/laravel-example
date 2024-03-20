@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -54,10 +55,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // $user->notify(new \App\Mail\DemoMail($user));
-        // Mail :: send (new \App\Mail\DemoMail($user));
+        $mailData = [
+            'imagePath' => asset('storage/' . $imagePath)
+        ];
 
-        Mail::to($user->email)->send(new \App\Mail\DemoMail($user));
+        // Mail::to($user->email)->send(new \App\Mail\DemoMail($mailData));
+
+        Mail::to($user->email)->send(new \App\Mail\DemoMail($mailData, $imagePath));
 
         return redirect(RouteServiceProvider::HOME);
     }

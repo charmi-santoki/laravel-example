@@ -3,26 +3,26 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Support\Facades\Storage;
 
 class DemoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $mailData;
+    public $mailData, $data;
+
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct($mailData, $data)
     {
         $this->mailData = $mailData;
+        $this->data = $data;
     }
 
     /**
@@ -36,7 +36,7 @@ class DemoMail extends Mailable
     }
 
     /**
-     * Get the message content definition.
+     * Get the message content def  inition.
      */
     public function content(): Content
     {
@@ -54,8 +54,13 @@ class DemoMail extends Mailable
     public function attachments(): array
     {
         return [
-            Attachment::fromPath(public_path('/images/download.jpeg')),
-            // Attachment::fromPath($mailData['fileName']),
+            Attachment::fromPath(public_path('storage/' . $this->data)),
         ];
+    }
+
+    public function build()
+    {
+        return $this->view('emails.demoMail')
+            ->with(['mailData' => $this->mailData]);
     }
 }
