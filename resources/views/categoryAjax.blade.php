@@ -47,15 +47,21 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter Name" value="" maxlength="50" required="">
+                                    placeholder="Enter Name" value="" maxlength="50">
                             </div>
+                            @error('name')
+                                <div class="error">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Details</label>
                             <div class="col-sm-12">
-                                <textarea id="detail" name="detail" required="" placeholder="Enter Details" class="form-control"></textarea>
+                                <textarea id="detail" name="detail" placeholder="Enter Details" class="form-control"></textarea>
                             </div>
+                            @error('detail')
+                                <div class="error">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-sm-offset-2 col-sm-10">
