@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CategoryAjaxController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -38,7 +38,7 @@ Route::get('dropdown', [DropdownController::class, 'index']);
 Route::post('api/fetch-states', [DropdownController::class, 'fetchState']);
 Route::post('api/fetch-cities', [DropdownController::class, 'fetchCity']);
 
-Route::resource('category-ajax-crud', CategoryAjaxController::class);
+Route::resource('categories', CategoryController::class);
 
 
 require __DIR__ . '/auth.php';

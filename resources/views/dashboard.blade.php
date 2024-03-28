@@ -4,7 +4,7 @@
             {{ __('Dashboard') }}
         </h2>
         <a class="btn btn-success" href="{{ route('products.index') }}"> Products</a>
-        <a class="btn btn-success" href="{{ route('category-ajax-crud.index') }}"> Category</a>
+        <a class="btn btn-success" href="{{ route('categories.index') }}"> Category</a>
     </x-slot>
 
     <div class="py-12">

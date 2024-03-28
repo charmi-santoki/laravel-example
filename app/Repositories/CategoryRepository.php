@@ -2,34 +2,48 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
-class CategoryRepository
+class CategoryRepository implements CategoryRepositoryInterface
 {
-    protected $model;
 
-    public function __construct(Category $category)
+    public function allCategories()
     {
-        $this->model = $category;
+        return Category::paginate(5);
     }
 
-    public function all()
+    public function storeCategory(array $request = [])
     {
-        return $this->model->latest()->get();
+        $category_data = [
+            "name"     => $request['name'],
+            "detail"  => $request['detail'],
+        ];
+
+        return Category::create($category_data);
     }
 
-    public function find($id)
+    public function findCategory($id)
     {
-        return $this->model->find($id);
+        return Category::find($id);
     }
 
-    public function createOrUpdate($id, $data)
+    public function updateCategory(array $request = [])
     {
-        return $this->model->updateOrCreate(['id' => $id], $data);
+        $category = Category::findOrFail($request['category_id']);
+
+        $category_data = [
+            "name" => $request['name'],
+            "detail" => $request['detail'],
+        ];
+
+        Category::where('id', $request['category_id'])->update($category_data);
     }
 
-    public function delete($id)
+    public function destroyCategory(array $where)
     {
-        return $this->model->find($id)->delete();
+        return Category::where($where)->delete();
     }
 }

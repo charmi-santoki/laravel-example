@@ -1,81 +1,126 @@
-<x-app-layout>
-    @section('content')
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>Products</h2>
+@extends('layouts.app')
+@section('content')
+    <section class="content-header">
+        <div class="container-fluid my-2">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Products</h1>
                 </div>
-                <div class="pull-right">
-                    <a class="btn btn-success" href="{{ route('products.create') }}"> Create New Product</a>
+                <div class="col-sm-6 text-right">
+                    <a href="{{ route('products.create') }}" class="btn btn-primary">New Product</a>
                 </div>
             </div>
         </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <div class="input-group input-group" style="width: 250px;">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success">
+                            <p>{{ $message }}</p>
+                        </div>
+                    @endif
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Details</th>
+                                {{-- <th>Category</th> --}}
+                                <th width="350px">Image</th>
+                                <th width="280px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($products as $product)
+                            <tr>
+                                <td>{{ ++$i }}</td>
+                                <td>{{ $product->name }}</td>
+                                <td>{{ $product->detail }}</td>
+                                {{-- <td>{{ $product->category->name }}</td> --}}
+                                <td>
+                                    <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3">
+                                </td>
+                                    <td>
+                                        <a href="{{ route('products.edit', $product->id) }}">
+                                            <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path
+                                                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
+                                                </path>
+                                            </svg>
+                                        </a>
+                                        {{-- <a href="{{ route('categories.destroy', $category->id) }}" class="text-danger w-4 h-4 mr-1">
+                                            <svg wire:loading.remove.delay="" wire:target=""
+                                                class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path ath fill-rule="evenodd"
+                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                        </a> --}}
+
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <input name="_method" type="hidden" value="DELETE">
+                                            <button type="submit" class="btn btn-xs btn-danger btn-flat show_confirm"
+                                                data-toggle="tooltip" title='Delete'>Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer clearfix">
+                    {{$products->links()}}
+                </div>
             </div>
-        @endif
+        </div>
+        <!-- /.card -->
+    </section>
+@endsection
 
-        <table class="table table-bordered">
-            <tr>
-                <th>No</th>
-                <th>Name</th>
-                <th>Details</th>
-                <th>Category</th>
-                <th width="350px">Image</th>
-                <th width="280px">Action</th>
-            </tr>
-            @foreach ($products as $product)
-                <tr>
-                    <td>{{ ++$i }}</td>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->detail }}</td>
-                    <td>{{ $product->category->name }}</td>
-                    <td>
-                        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->image }}" class="w-25 p-3">
-                    </td>
-                    <td>
-                        <form action="{{ route('products.destroy', $product->id) }}" method="POST">
-
-                            <a class="btn btn-primary" href="{{ route('products.edit', $product->id) }}">Edit</a>
-
-                            @csrf
-                            @method('DELETE')
-
-                            <input name="_method" type="hidden" value="DELETE">
-                            <button type="submit" class="btn btn-xs btn-danger btn-flat show_confirm" data-toggle="tooltip"
-                                title='Delete'>Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
-        {!! $products->links() !!}
-    @endsection
-</x-app-layout>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(".show_confirm").on('click', function() {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
+@section('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".show_confirm").on('click', function() {
+                var form = $(this).closest("form");
+                var name = $(this).data("name");
+                event.preventDefault();
+                swal({
+                        title: `Are you sure you want to delete this record?`,
+                        text: "If you delete this, it will be gone forever.",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            form.submit();
+                        }
+                    });
+            });
         });
-    });
-</script>
+    </script>
+@endsection

@@ -7,11 +7,7 @@ use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-
 class ProductController extends Controller
 {
 

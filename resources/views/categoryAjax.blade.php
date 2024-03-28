@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
     <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 </head>
 
 <body>
@@ -43,15 +45,16 @@
                     <form id="categoryForm" name="categoryForm" class="form-horizontal">
                         @csrf
                         <input type="hidden" name="category_id" id="category_id">
+
+                        <div class="alert alert-danger print-error-msg" style="display:none">
+                            <ul></ul>
+                        </div>
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="name" name="name"
                                     placeholder="Enter Name" value="" maxlength="50">
                             </div>
-                            @error('name')
-                                <div class="error">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -59,9 +62,6 @@
                             <div class="col-sm-12">
                                 <textarea id="detail" name="detail" placeholder="Enter Details" class="form-control"></textarea>
                             </div>
-                            @error('detail')
-                                <div class="error">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="col-sm-offset-2 col-sm-10">
@@ -83,6 +83,71 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        $("#saveBtn").on("click", function() {
+            e.preventDefault();
+
+            var url = $(this).attr("action");
+            let formData = new FormData(this);
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: (response) => {
+                    alert('Form submitted successfully');
+                    location.reload();
+                },
+                error: function(response) {
+                    $('#categoryForm').find(".print-error-msg").find("ul").html(
+                        '');
+                    $('#categoryForm').find(".print-error-msg").css('display',
+                        'block');
+                    $.each(response.responseJSON.errors, function(key, value) {
+                        $('#categoryForm').find(".print-error-msg")
+                            .find("ul").append('<li>' +
+                                value + '</li>');
+                    });
+                }
+            });
+        });
+
+
+        $(document).ready(function() {
+            $('#categoryForm').submit(function(e) {
+                alert("bbbb");
+                e.preventDefault();
+
+                var url = $(this).attr("action");
+                let formData = new FormData(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: (response) => {
+                        alert('Form submitted successfully');
+                        location.reload();
+                    },
+                    error: function(response) {
+                        $('#categoryForm').find(".print-error-msg").find("ul").html(
+                            '');
+                        $('#categoryForm').find(".print-error-msg").css('display',
+                            'block');
+                        $.each(response.responseJSON.errors, function(key, value) {
+                            $('#categoryForm').find(".print-error-msg")
+                                .find("ul").append('<li>' +
+                                    value + '</li>');
+                        });
+                    }
+                });
+
+            });
         });
 
         var table = $('.data-table').DataTable({
